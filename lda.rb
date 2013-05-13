@@ -5,10 +5,9 @@ userTopicList = {}
 bartenderTopicList = {}
 topicMapList = []
 
-numTopics = 8
+numTopics = 15
 
 topicCounter = Array.new(numTopics, 0)
-
 CSV.foreach("bartenders.csv") do |row|
   user_id = row[0]
   bartender_ids = row.drop(2)
@@ -20,7 +19,7 @@ CSV.foreach("bartenders.csv") do |row|
     topicMapList << [user_id, bid, Random.rand(numTopics)]
   end
 end
-
+tempCount = 0
 numBartenders = bartenderTopicList.length
 # init the distribution matrices
 topicMapList.each_with_index do |ubt, idx|
@@ -28,19 +27,20 @@ topicMapList.each_with_index do |ubt, idx|
       bartender = ubt[1] #documents
       topic = ubt[2]
      
+#tempCount = tempCount + 1
       topicCounter[topic] = topicCounter[topic] + 1
       userTopicList[user][topic] = userTopicList[user][topic] + 1
       bartenderTopicList[bartender][topic] = bartenderTopicList[bartender][topic] + 1	
-
+     #puts tempCount.inspect
      if topicCounter[topic] < 0
-	puts "shit is fucked: topic"
+	puts "shit is fucked: topic bol"
 	exit
      end	
      if userTopicList[user][topic] < 0
-	puts "shit is fucked: userTopic"
+	puts "shit is fucked: userTopic bol"
      end		
      if bartenderTopicList[bartender][topic] < 0
-	puts "shit is fucked: bartenderTopic"
+	puts "shit is fucked: bartenderTopic bol"
      end	
 end
 #puts userTopicList.inspect
@@ -57,8 +57,8 @@ beta = 1 #-0.01
 
       topicCounter[topic] = topicCounter[topic] - 1
       userTopicList[user][topic] = userTopicList[user][topic] - 1
-      bartenderTopicList[bartender][topic] = bartenderTopicList[bartender][topic] -1
-
+      bartenderTopicList[bartender][topic] = bartenderTopicList[bartender][topic] -1	
+	#puts idx.inspect
            if topicCounter[topic] < 0
 		puts "shit is fucked: topic"
 		exit
@@ -78,7 +78,7 @@ beta = 1 #-0.01
 
       (0..numTopics-1).each do |t|
 
-	phi[t] = (bartenderTopicList[bartender][topic])
+	phi[t] = (bartenderTopicList[bartender][topic] + alpha[t])* (bartenderTopicList[bartender][topic] + beta)/ Float(topicCounter[t] + beta*numBartenders)
         #phi[t] = (userTopicList[user][topic] + alpha[t]) #* (bartenderTopicList[bartender][topic] + beta)
 	#* (bartenderTopicList[bartender][topic] + beta) / Float(topicCounter[t] + beta*numBartenders)
 
@@ -88,7 +88,7 @@ beta = 1 #-0.01
           phiCum[t] = phiCum[t-1] + phi[t]
         end
       end
-      puts phi.inspect
+      #puts phi.inspect
       rando = Random.rand() * phiCum[numTopics-1]
       phiCum.each_with_index do |pc, index| # draw a topic
         if pc > rando
@@ -98,9 +98,6 @@ beta = 1 #-0.01
         end
       end
 
-	if idx > 10
-		break
-	end	
 
       ubt[2] = topic
       topicCounter[topic] = topicCounter[topic] + 1
@@ -116,6 +113,7 @@ beta = 1 #-0.01
 	     end		
 	     if bartenderTopicList[bartender][topic] < 0
 		puts "shit is fucked: bartenderTopic eol"
+		exit
 	     end	
 
       #puts topicCounter.inspect
