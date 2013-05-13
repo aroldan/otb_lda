@@ -3,22 +3,30 @@ require 'csv'
 
 userTopicList = {}
 bartenderTopicList = {}
+bartenderList = {}
 topicMapList = []
 
-numTopics = 15
-
+numTopics = 20
+numMult = 10;
 topicCounter = Array.new(numTopics, 0)
 CSV.foreach("bartenders.csv") do |row|
   user_id = row[0]
+  bartenderList[user_id] = row[1]
   bartender_ids = row.drop(2)
-
+  puts bartender_ids.inspect
+    
   userTopicList[user_id] = Array.new(numTopics, 0)
   bartender_ids.each do |bid|
+	
     bartenderTopicList[bid] = Array.new(numTopics, 0)
-
-    topicMapList << [user_id, bid, Random.rand(numTopics)]
+    (0..(numMult-1)).each do |f|	
+    	topicMapList << [user_id, bid, Random.rand(numTopics)]
+    end	
   end
 end
+puts bartenderList.inspect
+#puts topicMapList.inspect
+exit
 tempCount = 0
 numBartenders = bartenderTopicList.length
 # init the distribution matrices
@@ -46,8 +54,8 @@ end
 #puts userTopicList.inspect
 #exit
 
-alpha = Array.new(numTopics, 10)
-beta = 1 #-0.01
+alpha = Array.new(numTopics, 1)
+beta = 0 #-0.01
 
 (0..20).each do |f|
       topicMapList.each_with_index do |ubt, idx|
@@ -81,7 +89,7 @@ beta = 1 #-0.01
 	phi[t] = (bartenderTopicList[bartender][topic] + alpha[t])* (bartenderTopicList[bartender][topic] + beta)/ Float(topicCounter[t] + beta*numBartenders)
         #phi[t] = (userTopicList[user][topic] + alpha[t]) #* (bartenderTopicList[bartender][topic] + beta)
 	#* (bartenderTopicList[bartender][topic] + beta) / Float(topicCounter[t] + beta*numBartenders)
-
+	#phi[2] = 200
         if t == 0
           phiCum[t] = phi[t]
         else
@@ -90,10 +98,11 @@ beta = 1 #-0.01
       end
       #puts phi.inspect
       rando = Random.rand() * phiCum[numTopics-1]
-      phiCum.each_with_index do |pc, index| # draw a topic
-        if pc > rando
+      #phiCum.reverse_each_with_index do |pc, index| # draw a topic
+      (0..(numTopics-1)).reverse_each do |i|
+        if phiCum[i] < rando
 	  #puts pc.inspect
-          topic = index # assing topic
+          topic = i # assing topic
           break
         end
       end
@@ -119,7 +128,7 @@ beta = 1 #-0.01
       #puts topicCounter.inspect
       #puts userTopicList[user][topic].inspect
       #puts bartenderTopicList[bartender][topic]	.inspect
-      if idx < 2
+      if idx < 1
         #puts "Phis for #{idx}"
         #puts phi.inspect
       end
