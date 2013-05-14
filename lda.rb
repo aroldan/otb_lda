@@ -5,9 +5,11 @@ userTopicList = {}
 bartenderTopicList = {}
 bartenderList = {}
 topicMapList = []
+tempTop = []
 
-numTopics = 20
-numMult = 10;
+numTopics = 10
+numMult = 10
+nEntries = 0
 topicCounter = Array.new(numTopics, 0)
 CSV.foreach("bartenders.csv") do |row|
   user_id = row[0]
@@ -20,13 +22,14 @@ CSV.foreach("bartenders.csv") do |row|
 
     bartenderTopicList[bid] = Array.new(numTopics, 0)
     (0..(numMult-1)).each do |f|
-      topicMapList << [user_id, bid, Random.rand(numTopics)]
-    end
+	nEntries = nEntries + 1
+    	topicMapList << [user_id, bid, Random.rand(numTopics)]
+    end	
   end
 end
-puts bartenderList.inspect
+#puts bartenderList.inspect
 #puts topicMapList.inspect
-exit
+#exit
 tempCount = 0
 numBartenders = bartenderTopicList.length
 # init the distribution matrices
@@ -55,8 +58,9 @@ end
 #exit
 
 alpha = Array.new(numTopics, 1)
-beta = 0 #-0.01
+beta = 1 #-0.01
 
+<<<<<<< HEAD
 (0..20).each do |f|
   topicMapList.each_with_index do |ubt, idx|
     user = ubt[0] #words
@@ -87,6 +91,7 @@ beta = 0 #-0.01
     (0..numTopics-1).each do |t|
 
       phi[t] = (bartenderTopicList[bartender][topic] + alpha[t])* (bartenderTopicList[bartender][topic] + beta)/ Float(topicCounter[t] + beta*numBartenders)
+
         #phi[t] = (userTopicList[user][topic] + alpha[t]) #* (bartenderTopicList[bartender][topic] + beta)
   #* (bartenderTopicList[bartender][topic] + beta) / Float(topicCounter[t] + beta*numBartenders)
       #phi[2] = 200
@@ -132,12 +137,11 @@ beta = 0 #-0.01
       #puts "Phis for #{idx}"
       #puts phi.inspect
     end
-
-    topicMapList[idx] = ubt
+    (0..numTopics-1).each do |t|
+	tempTop[t] = Integer(100*topicCounter[t] / Float(nEntries))
+    end	
+    puts "Done with iteration #{f}"
+    puts topicCounter.inspect
   end
-
-  puts "Done with iteration #{f}"
-  puts topicCounter.inspect
-end
-
-#puts topicCounter.inspect
+ 
+  #puts topicCounter.inspect
