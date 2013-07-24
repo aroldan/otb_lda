@@ -11,6 +11,8 @@ numTopics = 10
 numMult = 10
 nEntries = 0
 topicCounter = Array.new(numTopics, 0)
+## Generates the bar tender list of W[i],D[i],topic[i]  -> topicMapList
+# Randomly assigns topics to each bartender
 CSV.foreach("bartenders.csv") do |row|
   user_id = row[0]
   bartenderList[user_id] = row[1]
@@ -23,6 +25,8 @@ CSV.foreach("bartenders.csv") do |row|
     bartenderTopicList[bid] = Array.new(numTopics, 0)
     (0..(numMult-1)).each do |f|
 	nEntries = nEntries + 1
+	
+    	#topicMapList << [user_id, bid, 3]
     	topicMapList << [user_id, bid, Random.rand(numTopics)]
     end	
   end
@@ -32,12 +36,12 @@ end
 #exit
 tempCount = 0
 numBartenders = bartenderTopicList.length
+
 # init the distribution matrices
 topicMapList.each_with_index do |ubt, idx|
   user = ubt[0] #words
   bartender = ubt[1] #documents
   topic = ubt[2]
-
   #tempCount = tempCount + 1
   topicCounter[topic] = topicCounter[topic] + 1
   userTopicList[user][topic] = userTopicList[user][topic] + 1
@@ -58,9 +62,8 @@ end
 #exit
 
 alpha = Array.new(numTopics, 1)
-beta = 1 #-0.01
-
-<<<<<<< HEAD
+beta =0.0001 #-0.01
+# This is the main loop.
 (0..20).each do |f|
   topicMapList.each_with_index do |ubt, idx|
     user = ubt[0] #words
@@ -90,30 +93,37 @@ beta = 1 #-0.01
 
     (0..numTopics-1).each do |t|
 
-      phi[t] = (bartenderTopicList[bartender][topic] + alpha[t])* (bartenderTopicList[bartender][topic] + beta)/ Float(topicCounter[t] + beta*numBartenders)
+	phi[t] = (bartenderTopicList[bartender][t] + alpha[t])* (bartenderTopicList[bartender][t] + beta)/ Float(topicCounter[t] + beta*numBartenders)
+	
+	#phi[t] = (bartenderTopicList[bartender][topic] + alpha[t])* (bartenderTopicList[bartender][topic] + beta)/ Float(topicCounter[t] + beta*numBartenders)
+	#phi[t] = (bartenderTopicList[bartender][topic])* (bartenderTopicList[bartender][topic])/ Float(topicCounter[t])
 
-        #phi[t] = (userTopicList[user][topic] + alpha[t]) #* (bartenderTopicList[bartender][topic] + beta)
-  #* (bartenderTopicList[bartender][topic] + beta) / Float(topicCounter[t] + beta*numBartenders)
-      #phi[2] = 200
-      if t == 0
-        phiCum[t] = phi[t]
-      else
-        phiCum[t] = phiCum[t-1] + phi[t]
-      end
+      	if t == 0
+        	phiCum[t] = phi[t]
+      	else
+        	phiCum[t] = phiCum[t-1] + phi[t]
+      	end
     end
+    
     #puts phi.inspect
+    #puts phiCum.inspect
     rando = Random.rand() * phiCum[numTopics-1]
+    #puts rando.inspect
+      #puts phiCum[numTopics-1]
     #phiCum.reverse_each_with_index do |pc, index| # draw a topic
-    (0..(numTopics-1)).reverse_each do |i|
-      if phiCum[i] < rando
+    (0..(numTopics-1)).each do |i|
+      if  rando < phiCum[i] 
+	#puts i.inspect
         #puts pc.inspect
         topic = i # assing topic
         break
       end
     end
 
-
     ubt[2] = topic
+    #topicMapList[idx] = ubt
+    #puts ubt.inspect
+    #puts topicMapList[idx].inspect	
     topicCounter[topic] = topicCounter[topic] + 1
     userTopicList[user][topic] = userTopicList[user][topic] + 1
     bartenderTopicList[bartender][topic] = bartenderTopicList[bartender][topic] + 1
@@ -137,11 +147,9 @@ beta = 1 #-0.01
       #puts "Phis for #{idx}"
       #puts phi.inspect
     end
-    (0..numTopics-1).each do |t|
-	tempTop[t] = Integer(100*topicCounter[t] / Float(nEntries))
-    end	
+  end
     puts "Done with iteration #{f}"
     puts topicCounter.inspect
-  end
- 
+  
+ end
   #puts topicCounter.inspect
