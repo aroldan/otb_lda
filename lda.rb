@@ -7,7 +7,7 @@ bartenderList = {}
 topicMapList = []
 tempTop = []
 
-numTopics = 10
+numTopics = 12
 numMult = 10
 nEntries = 0
 topicCounter = Array.new(numTopics, 0)
@@ -61,10 +61,10 @@ end
 #puts userTopicList.inspect
 #exit
 
-alpha = Array.new(numTopics, 1)
-beta =0.0001 #-0.01
+alpha = Array.new(numTopics, 0.1)
+beta =1  #-0.01
 # This is the main loop.
-(0..20).each do |f|
+(0..50).each do |f|
   topicMapList.each_with_index do |ubt, idx|
     user = ubt[0] #words
     bartender = ubt[1] #documents
@@ -104,8 +104,9 @@ beta =0.0001 #-0.01
         	phiCum[t] = phiCum[t-1] + phi[t]
       	end
     end
-    
-    #puts phi.inspect
+    if idx == 100    
+	puts phi.inspect
+    end
     #puts phiCum.inspect
     rando = Random.rand() * phiCum[numTopics-1]
     #puts rando.inspect
@@ -149,7 +150,14 @@ beta =0.0001 #-0.01
     end
   end
     puts "Done with iteration #{f}"
+    #puts topicCounter.inspect
     puts topicCounter.inspect
+
+    #temp =  bartenderTopicList.transpose
+    #xs = [1, 3, 2, 4]
+    #puts xs.map.with_index.sort_by(&:first).map(&:last)
+    	    
+    #puts phi.inspect
   
  end
   #puts topicCounter.inspect
