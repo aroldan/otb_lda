@@ -7,8 +7,8 @@ bartenderList = {}
 topicMapList = []
 tempTop = []
 
-numTopics = 12
-numMult = 10
+numTopics = 15
+numMult = 20
 nEntries = 0
 topicCounter = Array.new(numTopics, 0)
 ## Generates the bar tender list of W[i],D[i],topic[i]  -> topicMapList
@@ -61,7 +61,7 @@ end
 #puts userTopicList.inspect
 #exit
 
-alpha = Array.new(numTopics, 0.1)
+alpha = Array.new(numTopics, 1)
 beta =1  #-0.01
 # This is the main loop.
 (0..50).each do |f|
@@ -93,7 +93,7 @@ beta =1  #-0.01
 
     (0..numTopics-1).each do |t|
 
-	phi[t] = (bartenderTopicList[bartender][t] + alpha[t])* (bartenderTopicList[bartender][t] + beta)/ Float(topicCounter[t] + beta*numBartenders)
+	phi[t] = Float(userTopicList[user][t] + alpha[t])* Float(bartenderTopicList[bartender][t] + beta)/ Float(topicCounter[t] + beta*numBartenders)
 	
 	#phi[t] = (bartenderTopicList[bartender][topic] + alpha[t])* (bartenderTopicList[bartender][topic] + beta)/ Float(topicCounter[t] + beta*numBartenders)
 	#phi[t] = (bartenderTopicList[bartender][topic])* (bartenderTopicList[bartender][topic])/ Float(topicCounter[t])
