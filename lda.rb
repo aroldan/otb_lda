@@ -217,7 +217,7 @@ beta =1  #-0.01
 
       topTendersForMe = indexes_of_values(myTenders)
       topTendersForMe[0..10].each do |b|
-        puts bartenderList[b[0]]
+        puts bartenderList[b[0]] # todo: dedupe
       end
     end
 
