@@ -38,7 +38,7 @@ def top_tenders_for_topic(bartenderTopicList, bartenderList, topic_id, num_tende
 end
 
 numTopics = 15
-numMult = 10
+numMult = 20
 nEntries = 0
 topicCounter = Array.new(numTopics, 0)
 ## Generates the bar tender list of W[i],D[i],topic[i]  -> topicMapList
@@ -54,11 +54,11 @@ CSV.foreach("bartenders.csv") do |row|
 
     bartenderTopicList[bid] = Array.new(numTopics, 0)
     (0..(numMult-1)).each do |f|
-	nEntries = nEntries + 1
+      nEntries = nEntries + 1
 	
     	#topicMapList << [user_id, bid, 3]
     	topicMapList << [user_id, bid, Random.rand(numTopics)]
-    end	
+    end
   end
 end
 #puts bartenderList.inspect
@@ -94,7 +94,7 @@ end
 alpha = Array.new(numTopics, 1)
 beta =1  #-0.01
 # This is the main loop.
-(0..20).each do |f|
+(0..30).each do |f|
   topicMapList.each_with_index do |ubt, idx|
     user = ubt[0] #words
     bartender = ubt[1] #documents
