@@ -1,6 +1,24 @@
 puts "fuck yeah"
 require 'csv'
 
+def indexes_of_counts(arr)
+  popArr = []
+  arr.each_with_index do |t, idx|
+    popArr << [t, idx]
+  end
+
+  popArr.sort! { |a,b| b[0] <=> a[0] }
+end
+
+def indexes_of_values(hsh)
+  popArr = []
+  hsh.each do |key, value|
+    popArr << [key, value]
+  end
+
+  popArr.sort! { |a,b| b[1] <=> a[1] }
+end
+
 userTopicList = {}
 bartenderTopicList = {}
 bartenderList = {}
@@ -64,7 +82,7 @@ end
 alpha = Array.new(numTopics, 1)
 beta =1  #-0.01
 # This is the main loop.
-(0..50).each do |f|
+(0..5).each do |f|
   topicMapList.each_with_index do |ubt, idx|
     user = ubt[0] #words
     bartender = ubt[1] #documents
@@ -150,14 +168,31 @@ beta =1  #-0.01
     end
   end
     puts "Done with iteration #{f}"
-    #puts topicCounter.inspect
     puts topicCounter.inspect
 
-    #temp =  bartenderTopicList.transpose
-    #xs = [1, 3, 2, 4]
-    #puts xs.map.with_index.sort_by(&:first).map(&:last)
-    	    
-    #puts phi.inspect
+    topicPopArray = indexes_of_counts(topicCounter)
+    puts "Popular topics:"
+    puts topicPopArray.inspect
+    mostPopularTopic = topicPopArray[0][1] # index of most popular topic
+    puts "most popular is #{mostPopularTopic}"
+
+
+    bartenderCountsForMostPopularTopic = {}
+
+    bartenderTopicList.each do |tender_id, tender|
+      bartenderCountsForMostPopularTopic[tender_id] = tender[mostPopularTopic]
+    end
+
+    puts bartenderCountsForMostPopularTopic.inspect
+    bartenderPopArrayForTopic = indexes_of_values(bartenderCountsForMostPopularTopic)
+    puts bartenderPopArrayForTopic.inspect
+    bartenderPopArrayForTopic[0..10].each do |b|
+      puts bartenderList[b[0]]
+    end
+    #bartenderPopArrayForTopic = indexes_of_counts(bartenderCountsForMostPopularTopic)
+    # bartenderPopArrayForTopic.each do |b|
+    #   #puts bartenderList[b[1]]
+    # end
   
  end
   #puts topicCounter.inspect
