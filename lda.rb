@@ -25,8 +25,20 @@ bartenderList = {}
 topicMapList = []
 tempTop = []
 
+def top_tenders_for_topic(bartenderTopicList, bartenderList, topic_id, num_tenders)
+  bartenderCountsForTopic = {}
+  bartenderTopicList.each do |tender_id, tender|
+    bartenderCountsForTopic[tender_id] = tender[topic_id]
+  end
+
+  bartenderPopArrayForTopic = indexes_of_values(bartenderCountsForTopic)
+  bartenderPopArrayForTopic[0..num_tenders].each do |b|
+    puts bartenderList[b[0]]
+  end
+end
+
 numTopics = 15
-numMult = 20
+numMult = 10
 nEntries = 0
 topicCounter = Array.new(numTopics, 0)
 ## Generates the bar tender list of W[i],D[i],topic[i]  -> topicMapList
@@ -82,7 +94,7 @@ end
 alpha = Array.new(numTopics, 1)
 beta =1  #-0.01
 # This is the main loop.
-(0..5).each do |f|
+(0..20).each do |f|
   topicMapList.each_with_index do |ubt, idx|
     user = ubt[0] #words
     bartender = ubt[1] #documents
@@ -176,19 +188,23 @@ beta =1  #-0.01
     mostPopularTopic = topicPopArray[0][1] # index of most popular topic
     puts "most popular is #{mostPopularTopic}"
 
-
-    bartenderCountsForMostPopularTopic = {}
-
-    bartenderTopicList.each do |tender_id, tender|
-      bartenderCountsForMostPopularTopic[tender_id] = tender[mostPopularTopic]
+    topicPopArray[0..5].each do |t|
+      puts "\tTopic #{t}"
+      top_tenders_for_topic(bartenderTopicList, bartenderList, t[1], 10)
     end
 
-    puts bartenderCountsForMostPopularTopic.inspect
-    bartenderPopArrayForTopic = indexes_of_values(bartenderCountsForMostPopularTopic)
-    puts bartenderPopArrayForTopic.inspect
-    bartenderPopArrayForTopic[0..10].each do |b|
-      puts bartenderList[b[0]]
-    end
+    # bartenderCountsForMostPopularTopic = {}
+
+    # bartenderTopicList.each do |tender_id, tender|
+    #   bartenderCountsForMostPopularTopic[tender_id] = tender[mostPopularTopic]
+    # end
+
+    # puts bartenderCountsForMostPopularTopic.inspect
+    # bartenderPopArrayForTopic = indexes_of_values(bartenderCountsForMostPopularTopic)
+    # puts bartenderPopArrayForTopic.inspect
+    # bartenderPopArrayForTopic[0..10].each do |b|
+    #   puts bartenderList[b[0]]
+    # end
     #bartenderPopArrayForTopic = indexes_of_counts(bartenderCountsForMostPopularTopic)
     # bartenderPopArrayForTopic.each do |b|
     #   #puts bartenderList[b[1]]
