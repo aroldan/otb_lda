@@ -193,6 +193,36 @@ beta =1  #-0.01
       top_tenders_for_topic(bartenderTopicList, bartenderList, t[1], 10)
     end
 
+    bartenderIds = bartenderList.keys()
+    def tenders_for_user(userTopicList, bartenderTopicList, bartenderIds, bartenderList, user_id)
+      myTopics = userTopicList[user_id]
+
+      myTenders = {}
+      bartenderIds.each do |bId|
+        myTenders[bId] = 0
+      end
+
+      myTopics.each_with_index do |topicScore, topicIndex|
+        bartenderIds.each do |bId|
+          bt = bartenderTopicList[bId]
+          if bt.nil?
+            next
+          end
+
+          score = bartenderTopicList[bId][topicIndex]
+          myTenders[bId] = myTenders[bId] + topicScore * score
+        end
+        
+      end
+
+      topTendersForMe = indexes_of_values(myTenders)
+      topTendersForMe[0..10].each do |b|
+        puts bartenderList[b[0]]
+      end
+    end
+
+    tenders_for_user(userTopicList, bartenderTopicList, bartenderIds, bartenderList, "76")
+
     # bartenderCountsForMostPopularTopic = {}
 
     # bartenderTopicList.each do |tender_id, tender|
